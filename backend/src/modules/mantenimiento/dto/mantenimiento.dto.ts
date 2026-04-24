@@ -8,18 +8,18 @@ export class CreateMantenimientoDto {
   @IsNotEmpty({ message: 'El id del equipo es obligatorio' })
   @IsInt()
   @IsPositive()
-  id_equipo: number;
+  id_equipo!: number;
 
-  @IsOptional()
+  @IsOptional({ message: 'El id del usuario es opcional' })
   @IsInt()
   @IsPositive()
   id_usuario?: number;
 
   @IsNotEmpty({ message: 'La fecha es obligatoria' })
   @IsDateString({}, { message: 'La fecha debe tener formato YYYY-MM-DD' })
-  fecha: string;
+  fecha!: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'La descripción es opcional' })
   @IsString()
   descripcion?: string;
 }

@@ -3,7 +3,9 @@ import {
   Put, Delete, ParseIntPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { EntrenadoresService } from './entrenadores.service';
-import { CreateEntrenadorDto, UpdateEntrenadorDto, CreateAsignacionDto } from './dto/entrenador.dto';
+import { CreateEntrenadorDto } from './dto/entrenador.dto';
+import { UpdateEntrenadorDto } from './dto/update-entrenador.dto';
+import { CreateAsignacionDto } from './dto/asignacion.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('entrenadores')
@@ -41,7 +43,7 @@ export class EntrenadoresController {
     return this.entrenadoresService.remove(id);
   }
 
-  // ── Asignaciones entrenador ↔ socio ───────────────────────
+  //  Asignaciones entrenador ↔ socio
   @Post('asignaciones')
   @Roles('admin', 'entrenador')
   asignar(@Body() dto: CreateAsignacionDto) {

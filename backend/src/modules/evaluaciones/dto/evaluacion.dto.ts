@@ -8,25 +8,25 @@ export class CreateEvaluacionDto {
   @IsNotEmpty({ message: 'El id del socio es obligatorio' })
   @IsInt()
   @IsPositive()
-  id_socio: number;
+  id_socio!: number;
 
   @IsNotEmpty({ message: 'El peso es obligatorio' })
   @IsNumber({}, { message: 'El peso debe ser un número' })
   @IsPositive({ message: 'El peso debe ser mayor a 0' })
-  peso: number;
+  peso!: number;
 
-  @IsOptional()
-  @IsNumber()
-  @IsPositive()
+  @IsOptional({ message: 'La grasa corporal es opcional' })
+  @IsNumber({}, { message: 'La grasa corporal debe ser un número' })
+  @IsPositive({ message: 'La grasa corporal debe ser mayor a 0' })
   grasa?: number;
 
-  @IsOptional()
+  @IsOptional({ message: 'Las medidas son opcionales' })
   @IsString()
   medidas?: string;
 
   @IsNotEmpty({ message: 'La fecha es obligatoria' })
   @IsDateString({}, { message: 'La fecha debe tener formato YYYY-MM-DD' })
-  fecha: string;
+  fecha!: string;
 }
 
 export class UpdateEvaluacionDto extends PartialType(CreateEvaluacionDto) {}

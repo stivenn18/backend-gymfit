@@ -3,9 +3,8 @@ import {
   Put, Delete, ParseIntPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { RutinasService } from './rutinas.service';
-import {
-  CreateRutinaDto, UpdateRutinaDto, CreateAsignacionRutinaDto,
-} from './dto/rutina.dto';
+import { CreateRutinaDto, UpdateRutinaDto } from './dto/rutina.dto';
+import { CreateAsignacionRutinaDto } from './dto/asignacion-rutina.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('rutinas')
@@ -41,7 +40,7 @@ export class RutinasController {
     return this.rutinasService.remove(id);
   }
 
-  // ── Asignaciones rutina → socio ───────────────────────────
+  //  Asignaciones rutina → socio 
   @Post('asignaciones')
   @Roles('admin', 'entrenador')
   asignarRutina(@Body() dto: CreateAsignacionRutinaDto) {

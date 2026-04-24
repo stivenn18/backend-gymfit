@@ -1,14 +1,12 @@
 import {
-  IsInt, IsNotEmpty, IsOptional, IsString,
-  MaxLength, Min, IsPositive, IsDateString,
-} from 'class-validator'
-;
+  IsOptional, IsString, IsInt, IsPositive, MaxLength, Min,
+} from 'class-validator';
 
-export class CreateEntrenadorDto {
-  @IsNotEmpty({ message: 'El id del usuario es obligatorio' })
+export class UpdateEntrenadorDto {
+  @IsOptional({ message: 'El id del usuario es opcional' })
   @IsInt()
   @IsPositive()
-  id_usuario!: number;
+  id_usuario?: number;
 
   @IsOptional({ message: 'La especialidad es opcional' })
   @IsString()
@@ -20,4 +18,3 @@ export class CreateEntrenadorDto {
   @Min(0)
   experiencia?: number;
 }
-

@@ -10,19 +10,19 @@ export class CreateProspectoDto {
   @IsNotEmpty({ message: 'El nombre del prospecto es obligatorio' })
   @IsString()
   @MaxLength(100)
-  nombre: string;
+  nombre!: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El correo electrónico es opcional' })
   @IsString()
   @MaxLength(20)
   telefono?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El interés es opcional' })
   @IsString()
   @MaxLength(100)
   interes?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El origen es opcional' })
   @IsString()
   @MaxLength(30)
   origen?: string;

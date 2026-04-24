@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  // ─── Login ────────────────────────────────────────────────
+  //  Login y generación de token JWT 
   async login(dto: LoginDto) {
     // 1. Buscar el usuario por correo (con relación al rol)
     const usuario = await this.usuariosRepo.findOne({
@@ -58,7 +58,7 @@ export class AuthService {
     };
   }
 
-  // ─── Perfil del usuario autenticado ───────────────────────
+  //  Perfil del usuario autenticado 
   async perfil(id: number): Promise<Usuario> {
     const usuario = await this.usuariosRepo.findOne({
       where: { id_usuario: id },

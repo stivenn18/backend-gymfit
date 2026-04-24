@@ -3,7 +3,8 @@ import {
   Put, Delete, ParseIntPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { ClasesService } from './clases.service';
-import { CreateClaseDto, UpdateClaseDto } from './dto/clase.dto';
+import { CreateClaseDto } from './dto/clase.dto';
+import { UpdateClaseDto } from './dto/update-clase.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('clases')

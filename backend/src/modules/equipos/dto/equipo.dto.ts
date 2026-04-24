@@ -7,19 +7,19 @@ export class CreateEquipoDto {
   @IsNotEmpty({ message: 'El nombre del equipo es obligatorio' })
   @IsString()
   @MaxLength(100)
-  nombre: string;
+  nombre!: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El tipo del equipo es opcional' })
   @IsString()
   @MaxLength(50)
   tipo?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El estado del equipo es opcional' })
   @IsString()
   @MaxLength(50)
   estado?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'La ubicación del equipo es opcional' })
   @IsString()
   @MaxLength(100)
   ubicacion?: string;

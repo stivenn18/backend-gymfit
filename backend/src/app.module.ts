@@ -30,7 +30,7 @@ import { AsistenciasModule }   from './modules/asistencias/asistencias.module';
     AuthModule,
     RolesModule,
     UsuariosModule,
-    ProspectosModule,   // ← módulo independiente
+    ProspectosModule,   
     SociosModule,
     EntrenadoresModule,
     PlanesModule,

@@ -21,49 +21,49 @@ import { Asignacion }     from '../../entrenadores/entities/asignacion.entity';
 @Entity('socio')
 export class Socio {
   @PrimaryGeneratedColumn({ name: 'id_socio' })
-  id_socio: number;
+  id_socio!: number;
 
   @Column({ name: 'direccion', type: 'varchar', length: 150, nullable: true })
-  @IsOptional()
+  @IsOptional({ message: 'La dirección es opcional' })
   @IsString()
   @MaxLength(150)
-  direccion: string | null;
+  direccion!: string | null;
 
   @Column({ name: 'datos_salud', type: 'text', nullable: true })
-  @IsOptional()
+  @IsOptional({ message: 'Los datos de salud son opcionales' })
   @IsString()
-  datos_salud: string | null;
+  datos_salud!: string | null;
 
   @CreateDateColumn({ name: 'fecha_registro', type: 'timestamptz' })
-  fecha_registro: Date;
+  fecha_registro!: Date;
 
-  // ─── Relaciones ────────────────────────────────────────────
+  //  Relaciones 
   @ManyToOne(() => Usuario, { eager: true, nullable: false })
   @JoinColumn({ name: 'id_usuario' })
-  usuario: Usuario;
+  usuario!: Usuario;
 
   @ManyToOne(() => Prospecto, { nullable: true, eager: false })
   @JoinColumn({ name: 'id_prospecto' })
-  prospecto: Prospecto | null;
+  prospecto!: Prospecto | null;
 
   @OneToMany(() => Membresia, (m) => m.socio)
-  membresias: Membresia[];
+  membresias!: Membresia[];
 
   @OneToMany(() => Inscripcion, (i) => i.socio)
-  inscripciones: Inscripcion[];
+  inscripciones!: Inscripcion[];
 
   @OneToMany(() => Evaluacion, (e) => e.socio)
-  evaluaciones: Evaluacion[];
+  evaluaciones!: Evaluacion[];
 
   @OneToMany(() => Progreso, (p) => p.socio)
-  progresos: Progreso[];
+  progresos!: Progreso[];
 
   @OneToMany(() => Asistencia, (a) => a.socio)
-  asistencias: Asistencia[];
+  asistencias!: Asistencia[];
 
   @OneToMany(() => AsignacionRutina, (ar) => ar.socio)
-  asignaciones_rutina: AsignacionRutina[];
+  asignaciones_rutina!: AsignacionRutina[];
 
   @OneToMany(() => Asignacion, (a) => a.socio)
-  asignaciones_entrenador: Asignacion[];
+  asignaciones_entrenador!: Asignacion[];
 }

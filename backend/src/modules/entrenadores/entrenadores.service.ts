@@ -5,7 +5,9 @@ import { Entrenador } from './entities/entrenador.entity';
 import { Asignacion } from './entities/asignacion.entity';
 import { Usuario } from '../usuarios/entities/usuario.entity';
 import { Socio } from '../socios/entities/socio.entity';
-import { CreateEntrenadorDto, UpdateEntrenadorDto, CreateAsignacionDto } from './dto/entrenador.dto';
+import { CreateEntrenadorDto } from './dto/entrenador.dto';
+import { UpdateEntrenadorDto } from './dto/update-entrenador.dto';
+import { CreateAsignacionDto } from './dto/asignacion.dto';
 
 @Injectable()
 export class EntrenadoresService {
@@ -20,7 +22,7 @@ export class EntrenadoresService {
     private readonly socioRepo: Repository<Socio>,
   ) {}
 
-  // ═══════════ ENTRENADORES ═══════════
+  //  ENTRENADORES 
 
   async create(dto: CreateEntrenadorDto): Promise<Entrenador> {
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: dto.id_usuario } });
@@ -67,7 +69,7 @@ export class EntrenadoresService {
     await this.entrenadorRepo.remove(e);
   }
 
-  // ═══════════ ASIGNACIONES ═══════════
+  //  ASIGNACIONES 
 
   async asignar(dto: CreateAsignacionDto): Promise<Asignacion> {
     const entrenador = await this.entrenadorRepo.findOne({ where: { id_entrenador: dto.id_entrenador } });

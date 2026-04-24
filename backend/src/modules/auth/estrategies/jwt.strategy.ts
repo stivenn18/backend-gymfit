@@ -19,10 +19,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectRepository(Usuario)
     private readonly usuariosRepo: Repository<Usuario>,
   ) {
+    
+    const secret = config.get<string>('JWT_SECRET') || 'super_secret_key_123';
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('JWT_SECRET'),
+      secretOrKey: secret, //  asegúrate de que esta clave sea segura y esté en el .env
     });
   }
 

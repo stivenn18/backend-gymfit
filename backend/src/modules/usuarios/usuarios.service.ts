@@ -9,7 +9,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Usuario } from './entities/usuario.entity';
 import { Rol } from '../roles/entities/rol.entity';
-import { CreateUsuarioDto, UpdateUsuarioDto } from './dto/usuario.dto';
+import { CreateUsuarioDto } from './dto/usuario.dto';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 
 @Injectable()
 export class UsuariosService {
@@ -20,7 +21,7 @@ export class UsuariosService {
     private readonly rolRepo: Repository<Rol>,
   ) {}
 
-  // ─── Crear ────────────────────────────────────────────────
+  //  Crear nuevo usuario (con validaciones de correo e identificación únicos, y rol existente) 
   async create(dto: CreateUsuarioDto): Promise<Omit<Usuario, 'password'>> {
     const correoExiste = await this.usuarioRepo.findOne({ where: { correo: dto.correo } });
     if (correoExiste) throw new ConflictException('El correo ya está registrado');
@@ -39,7 +40,7 @@ export class UsuariosService {
     return resultado as Omit<Usuario, 'password'>;
   }
 
-  // ─── Listar todos ─────────────────────────────────────────
+  //  Listar todos los usuarios (sin la contraseña) con su rol incluido, ordenados por id_usuario ascendente
   async findAll(): Promise<Omit<Usuario, 'password'>[]> {
     const usuarios = await this.usuarioRepo.find({
       relations: ['rol'],
@@ -48,7 +49,7 @@ export class UsuariosService {
     return usuarios.map(({ password, ...u }) => u as Omit<Usuario, 'password'>);
   }
 
-  // ─── Buscar por id ────────────────────────────────────────
+  //  Buscar por id (sin la contraseña) con su rol incluido
   async findOne(id: number): Promise<Omit<Usuario, 'password'>> {
     const usuario = await this.usuarioRepo.findOne({
       where: { id_usuario: id },
@@ -59,7 +60,7 @@ export class UsuariosService {
     return resultado as Omit<Usuario, 'password'>;
   }
 
-  // ─── Actualizar ───────────────────────────────────────────
+  //  Actualizar usuario (con validaciones de rol existente)
   async update(id: number, dto: UpdateUsuarioDto): Promise<Omit<Usuario, 'password'>> {
     const usuario = await this.usuarioRepo.findOne({
       where: { id_usuario: id },
@@ -83,7 +84,7 @@ export class UsuariosService {
     return resultado as Omit<Usuario, 'password'>;
   }
 
-  // ─── Eliminar (desactivar) ────────────────────────────────
+  //  Eliminar (desactivar) usuario por id (cambiar estado a false)
   async remove(id: number): Promise<void> {
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: id } });
     if (!usuario) throw new NotFoundException(`Usuario con id ${id} no encontrado`);

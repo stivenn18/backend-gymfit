@@ -8,20 +8,21 @@ export class CreateProgresoDto {
   @IsNotEmpty({ message: 'El id del socio es obligatorio' })
   @IsInt()
   @IsPositive()
-  id_socio: number;
+  id_socio!: number;
 
-  @IsOptional()
+  @IsOptional({ message: 'El peso es opcional' })
   @IsNumber({}, { message: 'El peso debe ser un número' })
   @IsPositive({ message: 'El peso debe ser mayor a 0' })
   peso?: number;
 
-  @IsOptional()
+  @IsOptional({ message: 'Las observaciones son opcionales' })
   @IsString()
   observaciones?: string;
 
   @IsNotEmpty({ message: 'La fecha es obligatoria' })
   @IsDateString({}, { message: 'La fecha debe tener formato YYYY-MM-DD' })
-  fecha: string;
+  fecha!: string;
 }
 
 export class UpdateProgresoDto extends PartialType(CreateProgresoDto) {}
+

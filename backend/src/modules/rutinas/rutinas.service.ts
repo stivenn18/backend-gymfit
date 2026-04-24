@@ -6,9 +6,8 @@ import { RutinaEjercicio } from './entities/rutina-ejercicio.entity';
 import { AsignacionRutina } from './entities/asignacion-rutina.entity';
 import { Ejercicio } from '../ejercicios/entities/ejercicio.entity';
 import { Socio } from '../socios/entities/socio.entity';
-import {
-  CreateRutinaDto, UpdateRutinaDto, CreateAsignacionRutinaDto,
-} from './dto/rutina.dto';
+import { CreateRutinaDto, UpdateRutinaDto } from './dto/rutina.dto';
+import { CreateAsignacionRutinaDto } from './dto/asignacion-rutina.dto';
 
 @Injectable()
 export class RutinasService {
@@ -26,7 +25,7 @@ export class RutinasService {
     private readonly dataSource: DataSource,
   ) {}
 
-  // ═══════════ RUTINAS ═══════════
+  //  RUTINAS 
 
   async create(dto: CreateRutinaDto): Promise<Rutina> {
     return this.dataSource.transaction(async (manager) => {
@@ -89,7 +88,7 @@ export class RutinasService {
     await this.rutinaRepo.remove(r);
   }
 
-  // ═══════════ ASIGNACIONES RUTINA → SOCIO ═══════════
+  //  ASIGNACIONES RUTINA → SOCIO 
 
   async asignarRutina(dto: CreateAsignacionRutinaDto): Promise<AsignacionRutina> {
     const rutina = await this.rutinaRepo.findOne({ where: { id_rutina: dto.id_rutina } });

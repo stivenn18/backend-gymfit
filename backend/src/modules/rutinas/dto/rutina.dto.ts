@@ -5,47 +5,26 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
+import { RutinaEjercicioItemDto } from './rutina-ejercicio.dto';
 
-// ── Ejercicio dentro de una rutina ────────────────────────────
-export class RutinaEjercicioItemDto {
-  @IsNotEmpty()
-  @IsInt()
-  @IsPositive()
-  id_ejercicio: number;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  series?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  repeticiones?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  descanso?: number;
-}
-
-// ── Crear rutina ──────────────────────────────────────────────
+//  Crear rutina 
 export class CreateRutinaDto {
   @IsNotEmpty({ message: 'El nombre de la rutina es obligatorio' })
   @IsString()
   @MaxLength(100)
-  nombre: string;
+  nombre!: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'La descripción es opcional' })
   @IsString()
   descripcion?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'El nivel es opcional' })
   @IsString()
   @MaxLength(50)
   nivel?: string;
 
-  @IsOptional()
+  @IsOptional({ message: 'Los ejercicios son opcionales' })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => RutinaEjercicioItemDto)
@@ -54,19 +33,6 @@ export class CreateRutinaDto {
 
 export class UpdateRutinaDto extends PartialType(CreateRutinaDto) {}
 
-// ── Asignar rutina a socio ────────────────────────────────────
-export class CreateAsignacionRutinaDto {
-  @IsNotEmpty({ message: 'El id de la rutina es obligatorio' })
-  @IsInt()
-  @IsPositive()
-  id_rutina: number;
 
-  @IsNotEmpty({ message: 'El id del socio es obligatorio' })
-  @IsInt()
-  @IsPositive()
-  id_socio: number;
 
-  @IsNotEmpty({ message: 'La fecha de asignación es obligatoria' })
-  @IsDateString({}, { message: 'La fecha debe tener formato YYYY-MM-DD' })
-  fecha_asignacion: string;
-}
+

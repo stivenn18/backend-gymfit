@@ -3,7 +3,8 @@ import {
   Put, Delete, ParseIntPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto, UpdateUsuarioDto } from './dto/usuario.dto';
+import { CreateUsuarioDto } from './dto/usuario.dto';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('usuarios')
