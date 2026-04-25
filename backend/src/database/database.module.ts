@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-// ── Entidades ──────────────────────────────────────────────────
+//  Entidades 
 import { Rol }              from '../modules/roles/entities/rol.entity';
 import { Usuario }          from '../modules/usuarios/entities/usuario.entity';
 import { Prospecto }        from '../modules/prospectos/entities/prospecto.entity';

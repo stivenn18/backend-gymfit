@@ -23,11 +23,13 @@ export class UsuariosService {
     private readonly rolRepo: Repository<Rol>,
     private readonly config: ConfigService,
   ) {
-    // Lee BCRYPT_SALT_ROUNDS del .env, por defecto 10
-    this.saltRounds = this.config.get<number>('BCRYPT_SALT_ROUNDS', 10);
+    // parseInt garantiza número entero sin importar cómo ConfigService
+    // devuelva el valor del .env (siempre llega como string)
+    const raw = this.config.get<string>('BCRYPT_SALT_ROUNDS', '10');
+    this.saltRounds = parseInt(raw, 10) || 10;
   }
 
-  //  Crear nuevo usuario 
+  // ─── Crear nuevo usuario ──────────────────────────────────────
   async create(dto: CreateUsuarioDto): Promise<Omit<Usuario, 'password'>> {
     const correoExiste = await this.usuarioRepo.findOne({
       where: { correo: dto.correo },
@@ -94,7 +96,7 @@ export class UsuariosService {
     return resultado as Omit<Usuario, 'password'>;
   }
 
-  //  Eliminar (soft-delete: estado = false) 
+  // Eliminar (soft-delete: estado 
   async remove(id: number): Promise<void> {
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: id } });
     if (!usuario) throw new NotFoundException(`Usuario con id ${id} no encontrado`);
