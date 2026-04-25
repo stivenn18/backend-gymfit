@@ -1,15 +1,12 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import {
-  IsNotEmpty,
-  IsString,
-  IsOptional,
-  MaxLength,
-} from 'class-validator';
+import { AlertaStock } from '../../alertas-stock/entities/alerta-stock.entity';
 import { Mantenimiento } from '../../mantenimiento/entities/mantenimiento.entity';
 
 @Entity('equipo')
@@ -18,30 +15,38 @@ export class Equipo {
   id_equipo!: number;
 
   @Column({ name: 'nombre', type: 'varchar', length: 100 })
-  @IsNotEmpty({ message: 'El nombre del equipo es obligatorio' })
-  @IsString()
-  @MaxLength(100)
   nombre!: string;
 
   @Column({ name: 'tipo', type: 'varchar', length: 50, nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
   tipo!: string | null;
 
   @Column({ name: 'estado', type: 'varchar', length: 50, default: 'disponible' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
   estado!: string;
 
   @Column({ name: 'ubicacion', type: 'varchar', length: 100, nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
   ubicacion!: string | null;
 
-  
+  @Column({ name: 'cantidad', type: 'int', default: 0 })
+  cantidad!: number;
+
+  @Column({ name: 'stock_minimo', type: 'int', default: 5 })
+  stock_minimo!: number;
+
+  @Column({ name: 'stock_maximo', type: 'int', nullable: true })
+  stock_maximo!: number | null;
+
+  @Column({ name: 'precio_unitario', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  precio_unitario!: number | null;
+
+  @CreateDateColumn({ name: 'fecha_registro' })
+  fecha_registro!: Date;
+
+  @UpdateDateColumn({ name: 'fecha_actualizacion' })
+  fecha_actualizacion!: Date;
+
   @OneToMany(() => Mantenimiento, (m) => m.equipo)
   mantenimientos!: Mantenimiento[];
+
+  @OneToMany(() => AlertaStock, (a) => a.equipo)
+  alertas_stock!: AlertaStock[];
 }
