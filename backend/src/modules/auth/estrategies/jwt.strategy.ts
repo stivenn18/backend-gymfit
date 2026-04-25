@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
 
 export interface JwtPayload {
-  sub: number;   // id_usuario
+  sub: number;
   correo: string;
   rol: string;
 }
@@ -19,19 +19,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectRepository(Usuario)
     private readonly usuariosRepo: Repository<Usuario>,
   ) {
-    
-    const secret = config.get<string>('JWT_SECRET') || 'super_secret_key_123';
     super({
+      // Extrae el token del header: Authorization: Bearer <token>
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // Rechaza tokens expirados
       ignoreExpiration: false,
-      secretOrKey: secret, //  asegúrate de que esta clave sea segura y esté en el .env
+      // Clave secreta desde variables de entorno
+      secretOrKey: config.get<string>('JWT_SECRET') || 'super-secret-key-12345',
     });
   }
 
-  /**
-   * Se ejecuta después de verificar la firma del token.
-   * El objeto retornado queda en request.user.
-   */
+
   async validate(payload: JwtPayload): Promise<Usuario> {
     const usuario = await this.usuariosRepo.findOne({
       where: { id_usuario: payload.sub },

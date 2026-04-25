@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-// Entidades 
+// ── Entidades ──────────────────────────────────────────────────
 import { Rol }              from '../modules/roles/entities/rol.entity';
 import { Usuario }          from '../modules/usuarios/entities/usuario.entity';
 import { Prospecto }        from '../modules/prospectos/entities/prospecto.entity';
@@ -24,13 +24,25 @@ import { Equipo }           from '../modules/equipos/entities/equipo.entity';
 import { Mantenimiento }    from '../modules/mantenimiento/entities/mantenimiento.entity';
 
 const ENTITIES = [
-  Rol, Usuario, Prospecto, Socio,
-  Entrenador, Asignacion,
-  Plan, Membresia,
-  Ejercicio, Rutina, RutinaEjercicio, AsignacionRutina,
-  Clase, Inscripcion,
-  Evaluacion, Progreso, Asistencia,
-  Equipo, Mantenimiento,
+  Rol,
+  Usuario,
+  Prospecto,
+  Socio,
+  Entrenador,
+  Asignacion,
+  Plan,
+  Membresia,
+  Ejercicio,
+  Rutina,
+  RutinaEjercicio,
+  AsignacionRutina,
+  Clase,
+  Inscripcion,
+  Evaluacion,
+  Progreso,
+  Asistencia,
+  Equipo,
+  Mantenimiento,
 ];
 
 @Module({
@@ -40,12 +52,12 @@ const ENTITIES = [
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host:      config.get<string>('DB_HOST'),
-        port:      config.get<number>('DB_PORT'),
-        username:  config.get<string>('DB_USERNAME'),
-        password:  config.get<string>('DB_PASSWORD'),
-        database:  config.get<string>('DB_NAME'),
-        entities:  [__dirname + '/../modules/**/*.entity{.ts,.js}'],
+        host:        config.get<string>('DB_HOST'),
+        port:        config.get<number>('DB_PORT'),
+        username:    config.get<string>('DB_USERNAME'),
+        password:    config.get<string>('DB_PASSWORD'),
+        database:    config.get<string>('DB_NAME'),
+        entities:    ENTITIES,
         synchronize: config.get<string>('NODE_ENV') !== 'production',
         logging:     config.get<string>('NODE_ENV') === 'development',
       }),

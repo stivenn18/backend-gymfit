@@ -8,9 +8,10 @@ async function bootstrap() {
   // Prefijo global para todos los endpoints → /api/...
   app.setGlobalPrefix('api');
 
-  // Habilitar CORS para que el frontend pueda conectarse
+  // CORS — lee el origen desde .env (CORS_ORIGIN)
+  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3001'],
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
@@ -18,9 +19,9 @@ async function bootstrap() {
   // Pipe global de validación — usa class-validator en todos los DTOs
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,           // elimina propiedades no declaradas en el DTO
-      forbidNonWhitelisted: true, // lanza error si llegan propiedades extra
-      transform: true,           // convierte tipos automáticamente (string → number, etc.)
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
       transformOptions: {
         enableImplicitConversion: true,
       },
