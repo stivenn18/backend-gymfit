@@ -21,6 +21,9 @@ import { ProgresoModule }      from './modules/progreso/progreso.module';
 import { EquiposModule }       from './modules/equipos/equipos.module';
 import { MantenimientoModule } from './modules/mantenimiento/mantenimiento.module';
 import { AsistenciasModule }   from './modules/asistencias/asistencias.module';
+import { AlertasStockModule }  from './modules/alertas-stock/alertas-stock.module';
+import { NotificacionesModule } from './modules/notificaciones/notificaciones.module';
+import { ReportesModule }      from './modules/reportes/reportes.module';
 
 @Module({
   imports: [
@@ -48,6 +51,9 @@ import { AsistenciasModule }   from './modules/asistencias/asistencias.module';
     AsistenciasModule,
     EquiposModule,
     MantenimientoModule,
+    AlertasStockModule,
+    NotificacionesModule,
+    ReportesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
