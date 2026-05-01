@@ -7,16 +7,15 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { Usuario }        from '../../usuarios/entities/usuario.entity';
-import { Prospecto }      from '../../prospectos/entities/prospecto.entity';
-import { Membresia }      from '../../membresias/entities/membresia.entity';
-import { Inscripcion }    from '../../inscripciones/entities/inscripcion.entity';
-import { Evaluacion }     from '../../evaluaciones/entities/evaluacion.entity';
-import { Progreso }       from '../../progreso/entities/progreso.entity';
-import { Asistencia }     from '../../asistencias/entities/asistencia.entity';
+import { Usuario }          from '../../usuarios/entities/usuario.entity';
+import { Prospecto }        from '../../prospectos/entities/prospecto.entity';
+import { Membresia }        from '../../membresias/entities/membresia.entity';
+import { Inscripcion }      from '../../inscripciones/entities/inscripcion.entity';
+import { Evaluacion }       from '../../evaluaciones/entities/evaluacion.entity';
+import { Progreso }         from '../../progreso/entities/progreso.entity';
+import { Asistencia }       from '../../asistencias/entities/asistencia.entity';
 import { AsignacionRutina } from '../../rutinas/entities/asignacion-rutina.entity';
-import { Asignacion }     from '../../entrenadores/entities/asignacion.entity';
+import { Asignacion }       from '../../entrenadores/entities/asignacion.entity';
 
 @Entity('socio')
 export class Socio {
@@ -24,20 +23,15 @@ export class Socio {
   id_socio!: number;
 
   @Column({ name: 'direccion', type: 'varchar', length: 150, nullable: true })
-  @IsOptional({ message: 'La dirección es opcional' })
-  @IsString()
-  @MaxLength(150)
   direccion!: string | null;
 
   @Column({ name: 'datos_salud', type: 'text', nullable: true })
-  @IsOptional({ message: 'Los datos de salud son opcionales' })
-  @IsString()
   datos_salud!: string | null;
 
   @CreateDateColumn({ name: 'fecha_registro', type: 'timestamptz' })
   fecha_registro!: Date;
 
-  //  Relaciones 
+  // ─── Relaciones ────────────────────────────────────────────
   @ManyToOne(() => Usuario, { eager: true, nullable: false })
   @JoinColumn({ name: 'id_usuario' })
   usuario!: Usuario;

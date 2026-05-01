@@ -12,7 +12,7 @@ export class CreateProspectoDto {
   @MaxLength(100)
   nombre!: string;
 
-  @IsOptional({ message: 'El correo electrónico es opcional' })
+  @IsOptional({ message: 'El teléfono es opcional' })
   @IsString()
   @MaxLength(20)
   telefono?: string;

@@ -15,12 +15,31 @@ import { Rol } from '../roles/entities/rol.entity';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET') || 'super-secret-key-12345',
-        signOptions: {
-          expiresIn: config.get<number>('JWT_EXPIRES_IN', 28800), // "8 horas en segundos"
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error(
+            'JWT_SECRET no está configurado. Agréguela en el archivo .env',
+          );
+        }
+
+        const expiresIn = config.get<string>('JWT_EXPIRES_IN', '8h');
+        if (!expiresIn) {
+          throw new Error('JWT_EXPIRES_IN no está configurado');
+        }
+
+        const parsedExpiresIn = parseInt(expiresIn, 10);
+        const expiresInValue = Number.isNaN(parsedExpiresIn)
+          ? expiresIn
+          : parsedExpiresIn;
+
+        return {
+          secret,
+          signOptions: {
+            expiresIn: expiresInValue as any,
+          },
+        };
+      },
     }),
     TypeOrmModule.forFeature([Usuario, Rol]),
   ],

@@ -22,6 +22,8 @@ import { Progreso }         from '../modules/progreso/entities/progreso.entity';
 import { Asistencia }       from '../modules/asistencias/entities/asistencia.entity';
 import { Equipo }           from '../modules/equipos/entities/equipo.entity';
 import { Mantenimiento }    from '../modules/mantenimiento/entities/mantenimiento.entity';
+import { AlertaStock }      from '../modules/alertas-stock/entities/alerta-stock.entity';
+import { Notificacion }     from '../modules/notificaciones/entities/notificacion.entity';
 
 const ENTITIES = [
   Rol,
@@ -43,6 +45,8 @@ const ENTITIES = [
   Asistencia,
   Equipo,
   Mantenimiento,
+  AlertaStock,
+  Notificacion,
 ];
 
 @Module({

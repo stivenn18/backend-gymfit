@@ -16,10 +16,8 @@ export class NotificacionesService {
     @InjectRepository(Equipo)
     private readonly equipoRepo: Repository<Equipo>,
   ) {}
-
-  // ────────────────────────────────────────────────
+ 
   // CRUD básico
-  // ────────────────────────────────────────────────
 
   async create(dto: CreateNotificacionDto): Promise<Notificacion> {
     const notif = this.notificacionRepo.create({
@@ -61,9 +59,8 @@ export class NotificacionesService {
     await this.notificacionRepo.remove(notif);
   }
 
-  // ────────────────────────────────────────────────
   // Marcar como leída(s)
-  // ────────────────────────────────────────────────
+
 
   async marcarLeidas(id_usuario: number, dto: MarcarLeidaDto): Promise<{ actualizadas: number }> {
     const query = this.notificacionRepo.createQueryBuilder()
@@ -90,9 +87,7 @@ export class NotificacionesService {
     return { total };
   }
 
-  // ────────────────────────────────────────────────
   // Notificaciones automáticas — RF-021
-  // ────────────────────────────────────────────────
 
   /**
    * Genera notificaciones para membresías que vencen en los próximos N días.
@@ -172,7 +167,7 @@ export class NotificacionesService {
 
       if (!existente) {
         const notif = await this.create({
-          id_usuario: null, // Notificación global para admins
+          id_usuario: undefined, // Notificación global para admins
           tipo: 'stock_bajo',
           titulo: 'Stock bajo detectado',
           mensaje: `El equipo "${equipo.nombre}" tiene ${equipo.cantidad} unidades, por debajo del mínimo de ${equipo.stock_minimo}.`,

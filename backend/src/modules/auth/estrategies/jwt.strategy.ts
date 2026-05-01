@@ -19,16 +19,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectRepository(Usuario)
     private readonly usuariosRepo: Repository<Usuario>,
   ) {
+    const secret = config.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new Error(
+        'JWT_SECRET no está configurado. Agréguela en el archivo .env',
+      );
+    }
+
     super({
-      // Extrae el token del header: Authorization: Bearer <token>
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      // Rechaza tokens expirados
       ignoreExpiration: false,
-      // Clave secreta desde variables de entorno
-      secretOrKey: config.get<string>('JWT_SECRET') || 'super-secret-key-12345',
+      secretOrKey: secret,
     });
   }
-
 
   async validate(payload: JwtPayload): Promise<Usuario> {
     const usuario = await this.usuariosRepo.findOne({
