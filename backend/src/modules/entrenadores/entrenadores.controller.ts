@@ -1,65 +1,69 @@
-import {
-  Controller, Get, Post, Body, Param,
-  Put, Delete, ParseIntPipe, HttpCode, HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { EntrenadoresService } from './entrenadores.service';
 import { CreateEntrenadorDto } from './dto/entrenador.dto';
 import { UpdateEntrenadorDto } from './dto/update-entrenador.dto';
 import { CreateAsignacionDto } from './dto/asignacion.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
+@ApiTags('Entrenadores')
+@ApiBearerAuth('JWT-auth')
 @Controller('entrenadores')
 export class EntrenadoresController {
   constructor(private readonly entrenadoresService: EntrenadoresService) {}
 
   @Post()
   @Roles('admin')
-  create(@Body() dto: CreateEntrenadorDto) {
-    return this.entrenadoresService.create(dto);
-  }
+  @ApiOperation({ summary: 'Registrar entrenador (admin)' })
+  @ApiResponse({ status: 201, description: 'Entrenador registrado' })
+  create(@Body() dto: CreateEntrenadorDto) { return this.entrenadoresService.create(dto); }
 
   @Get()
   @Roles('admin', 'recepcionista')
-  findAll() {
-    return this.entrenadoresService.findAll();
-  }
+  @ApiOperation({ summary: 'Listar todos los entrenadores' })
+  @ApiResponse({ status: 200, description: 'Lista de entrenadores' })
+  findAll() { return this.entrenadoresService.findAll(); }
 
   @Get(':id')
   @Roles('admin', 'recepcionista', 'entrenador')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.entrenadoresService.findOne(id);
-  }
+  @ApiOperation({ summary: 'Obtener entrenador por ID' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Datos del entrenador' })
+  findOne(@Param('id', ParseIntPipe) id: number) { return this.entrenadoresService.findOne(id); }
 
   @Put(':id')
   @Roles('admin')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateEntrenadorDto) {
-    return this.entrenadoresService.update(id, dto);
-  }
+  @ApiOperation({ summary: 'Actualizar entrenador (admin)' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Entrenador actualizado' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateEntrenadorDto) { return this.entrenadoresService.update(id, dto); }
 
   @Delete(':id')
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.entrenadoresService.remove(id);
-  }
+  @ApiOperation({ summary: 'Eliminar entrenador (admin)' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 204, description: 'Entrenador eliminado' })
+  remove(@Param('id', ParseIntPipe) id: number) { return this.entrenadoresService.remove(id); }
 
-  //  Asignaciones entrenador ↔ socio
   @Post('asignaciones')
   @Roles('admin', 'entrenador')
-  asignar(@Body() dto: CreateAsignacionDto) {
-    return this.entrenadoresService.asignar(dto);
-  }
+  @ApiOperation({ summary: 'Asignar entrenador a socio', description: 'Crea la relación entrenador ↔ socio.' })
+  @ApiResponse({ status: 201, description: 'Asignación creada' })
+  asignar(@Body() dto: CreateAsignacionDto) { return this.entrenadoresService.asignar(dto); }
 
   @Get(':id/asignaciones')
   @Roles('admin', 'entrenador')
-  asignacionesByEntrenador(@Param('id', ParseIntPipe) id: number) {
-    return this.entrenadoresService.findAsignacionesByEntrenador(id);
-  }
+  @ApiOperation({ summary: 'Socios asignados a un entrenador' })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del entrenador' })
+  @ApiResponse({ status: 200, description: 'Lista de asignaciones' })
+  asignacionesByEntrenador(@Param('id', ParseIntPipe) id: number) { return this.entrenadoresService.findAsignacionesByEntrenador(id); }
 
   @Delete('asignaciones/:id')
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeAsignacion(@Param('id', ParseIntPipe) id: number) {
-    return this.entrenadoresService.removeAsignacion(id);
-  }
+  @ApiOperation({ summary: 'Eliminar asignación entrenador-socio (admin)' })
+  @ApiParam({ name: 'id', type: Number, description: 'ID de la asignación' })
+  @ApiResponse({ status: 204, description: 'Asignación eliminada' })
+  removeAsignacion(@Param('id', ParseIntPipe) id: number) { return this.entrenadoresService.removeAsignacion(id); }
 }

@@ -1,12 +1,9 @@
 import {
-  Controller,
-  Post,
-  Put,
-  Body,
-  Get,
-  HttpCode,
-  HttpStatus,
+  Controller, Post, Put, Body, Get, HttpCode, HttpStatus,
 } from '@nestjs/common';
+import {
+  ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -16,43 +13,77 @@ import { UsuarioActual } from '../../common/decorators/usuario-actual.decorator'
 import { Usuario } from '../usuarios/entities/usuario.entity';
 import { Public } from '../../common/decorators/public.decorator';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  /** POST /api/auth/register — HU-01 */
+  // ─── HU-01: Registro ──────────────────────────────────────────
+
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Registrar nuevo usuario',
+    description:
+      'Crea un nuevo usuario en el sistema. ' +
+      'Verifica correo único, identificación única y que el rol exista. ' +
+      'Retorna un JWT listo para usar.',
+  })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ status: 201, description: 'Usuario creado — retorna access_token y datos del usuario' })
+  @ApiResponse({ status: 400, description: 'Datos de validación incorrectos' })
+  @ApiResponse({ status: 404, description: 'El rol indicado no existe' })
+  @ApiResponse({ status: 409, description: 'El correo o la identificación ya están registrados' })
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
-  /** POST /api/auth/login — HU-02 */
+  // ─── HU-02: Login ─────────────────────────────────────────────
+
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Iniciar sesión',
+    description:
+      'Autentica al usuario con correo y contraseña. ' +
+      'Verifica que la cuenta esté activa. ' +
+      'Retorna un JWT con duración de 8 horas.',
+  })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: 200, description: 'Login exitoso — retorna access_token y datos del usuario' })
+  @ApiResponse({ status: 401, description: 'Credenciales incorrectas o usuario inactivo' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
-  /**
-   * GET /api/auth/perfil — HU-03
-   * Retorna los datos del usuario autenticado sin el campo password.
-   * El decorador @UsuarioActual() inyecta el usuario desde request.user
-   * (que fue validado y poblado por JwtStrategy.validate()).
-   */
+  // ─── HU-03: Perfil ────────────────────────────────────────────
+
   @Get('perfil')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Ver perfil propio',
+    description: 'Retorna los datos completos del usuario autenticado (sin contraseña).',
+  })
+  @ApiResponse({ status: 200, description: 'Datos del perfil del usuario autenticado' })
+  @ApiResponse({ status: 401, description: 'Token inválido o expirado' })
   perfil(@UsuarioActual() usuario: Usuario) {
     return this.authService.perfil(usuario.id_usuario);
   }
 
-  /**
-   * PUT /api/auth/perfil — HU-03
-   * Actualiza nombre y/o teléfono (campos no críticos).
-   */
   @Put('perfil')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Actualizar perfil propio',
+    description:
+      'Actualiza nombre y/o teléfono del usuario autenticado. ' +
+      'Correo e identificación no son editables desde este endpoint.',
+  })
+  @ApiBody({ type: ActualizarPerfilDto })
+  @ApiResponse({ status: 200, description: 'Perfil actualizado correctamente' })
+  @ApiResponse({ status: 401, description: 'Token inválido o expirado' })
   actualizarPerfil(
     @UsuarioActual() usuario: Usuario,
     @Body() dto: ActualizarPerfilDto,
@@ -60,14 +91,19 @@ export class AuthController {
     return this.authService.actualizarPerfil(usuario.id_usuario, dto);
   }
 
-  /**
-   * PUT /api/auth/perfil/password — HU-03
-   * Cambia la contraseña verificando primero la actual con bcrypt.compare.
-   * IMPORTANTE: esta ruta debe ir ANTES de 'perfil' para que NestJS
-   * no la confunda con PUT /api/auth/perfil/:id.
-   */
   @Put('perfil/password')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Cambiar contraseña propia',
+    description:
+      'Cambia la contraseña del usuario autenticado. ' +
+      'Requiere la contraseña actual (verificada con bcrypt) antes de permitir el cambio.',
+  })
+  @ApiBody({ type: CambiarPasswordDto })
+  @ApiResponse({ status: 200, description: 'Contraseña actualizada correctamente' })
+  @ApiResponse({ status: 400, description: 'Contraseña actual incorrecta o nueva igual a la actual' })
+  @ApiResponse({ status: 401, description: 'Token inválido o expirado' })
   cambiarPassword(
     @UsuarioActual() usuario: Usuario,
     @Body() dto: CambiarPasswordDto,

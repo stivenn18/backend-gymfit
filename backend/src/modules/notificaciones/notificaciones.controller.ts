@@ -2,92 +2,100 @@ import {
   Controller, Get, Post, Body, Param,
   Put, Delete, ParseIntPipe, HttpCode, HttpStatus, Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { NotificacionesService } from './notificaciones.service';
 import { CreateNotificacionDto, UpdateNotificacionDto, MarcarLeidaDto } from './dto/notificacion.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 
+@ApiTags('Notificaciones')
+@ApiBearerAuth('JWT-auth')
 @Controller('notificaciones')
 export class NotificacionesController {
   constructor(private readonly notificacionesService: NotificacionesService) {}
 
-  /** POST /notificaciones — Crear notificación manual */
   @Post()
   @Roles('admin')
-  create(@Body() dto: CreateNotificacionDto) {
-    return this.notificacionesService.create(dto);
-  }
+  @ApiOperation({ summary: 'Crear notificación manual (admin)', description: 'Crea una notificación manual para uno o varios usuarios.' })
+  @ApiResponse({ status: 201, description: 'Notificación creada' })
+  create(@Body() dto: CreateNotificacionDto) { return this.notificacionesService.create(dto); }
 
-  /** GET /notificaciones — Listar todas (filtro por usuario opcional) */
   @Get()
   @Roles('admin', 'recepcionista')
+  @ApiOperation({ summary: 'Listar notificaciones', description: 'Lista todas las notificaciones. Filtra por usuario con el query param id_usuario.' })
+  @ApiQuery({ name: 'id_usuario', required: false, type: Number, description: 'Filtrar por ID de usuario' })
+  @ApiResponse({ status: 200, description: 'Lista de notificaciones' })
   findAll(@Query('id_usuario', new ParseIntPipe({ optional: true })) id_usuario?: number) {
     return this.notificacionesService.findAll(id_usuario);
   }
 
-  /** GET /notificaciones/estadisticas — Estadísticas generales */
   @Get('estadisticas')
   @Roles('admin')
-  estadisticas() {
-    return this.notificacionesService.obtenerEstadisticas();
-  }
+  @ApiOperation({ summary: 'Estadísticas de notificaciones (admin)', description: 'Resumen de notificaciones leídas, no leídas y por tipo.' })
+  @ApiResponse({ status: 200, description: 'Estadísticas de notificaciones' })
+  estadisticas() { return this.notificacionesService.obtenerEstadisticas(); }
 
-  /** POST /notificaciones/generar-automaticas — Genera todas las notificaciones automáticas */
   @Post('generar-automaticas')
   @Roles('admin', 'recepcionista')
-  generarAutomaticas() {
-    return this.notificacionesService.generarTodasAutomaticas();
-  }
+  @ApiOperation({ summary: 'Generar todas las notificaciones automáticas', description: 'Genera notificaciones de membresías por vencer y stock bajo en un solo llamado.' })
+  @ApiResponse({ status: 201, description: 'Notificaciones generadas' })
+  generarAutomaticas() { return this.notificacionesService.generarTodasAutomaticas(); }
 
-  /** POST /notificaciones/generar/membresias — Solo notificaciones de membresías por vencer */
   @Post('generar/membresias')
   @Roles('admin', 'recepcionista')
+  @ApiOperation({ summary: 'Generar notificaciones de membresías por vencer', description: 'Genera notificaciones para socios cuya membresía vence en N días.' })
+  @ApiQuery({ name: 'dias', required: false, type: Number, example: 5, description: 'Días de anticipación (default: 5)' })
+  @ApiResponse({ status: 201, description: 'Notificaciones de membresías generadas' })
   generarMembresias(@Query('dias', new ParseIntPipe({ optional: true })) dias?: number) {
     return this.notificacionesService.generarNotificacionesMembresias(dias ?? 5);
   }
 
-  /** POST /notificaciones/generar/stock-bajo — Solo notificaciones de stock bajo */
   @Post('generar/stock-bajo')
   @Roles('admin', 'recepcionista')
-  generarStockBajo() {
-    return this.notificacionesService.generarNotificacionesStockBajo();
-  }
+  @ApiOperation({ summary: 'Generar notificaciones de stock bajo', description: 'Genera notificaciones para equipos cuyo stock está por debajo del mínimo.' })
+  @ApiResponse({ status: 201, description: 'Notificaciones de stock generadas' })
+  generarStockBajo() { return this.notificacionesService.generarNotificacionesStockBajo(); }
 
-  /** GET /notificaciones/no-leidas/:id_usuario — Contador de no leídas */
   @Get('no-leidas/:id_usuario')
   @Roles('admin', 'recepcionista', 'entrenador', 'socio')
+  @ApiOperation({ summary: 'Contador de notificaciones no leídas' })
+  @ApiParam({ name: 'id_usuario', type: Number, description: 'ID del usuario' })
+  @ApiResponse({ status: 200, description: 'Número de notificaciones no leídas' })
   contarNoLeidas(@Param('id_usuario', ParseIntPipe) id_usuario: number) {
     return this.notificacionesService.contarNoLeidas(id_usuario);
   }
 
-  /** POST /notificaciones/marcar-leidas/:id_usuario — Marcar como leídas */
   @Post('marcar-leidas/:id_usuario')
   @Roles('admin', 'recepcionista', 'entrenador', 'socio')
+  @ApiOperation({ summary: 'Marcar notificaciones como leídas', description: 'Marca una o todas las notificaciones de un usuario como leídas.' })
+  @ApiParam({ name: 'id_usuario', type: Number })
+  @ApiResponse({ status: 200, description: 'Notificaciones marcadas como leídas' })
   marcarLeidas(
     @Param('id_usuario', ParseIntPipe) id_usuario: number,
     @Body() dto: MarcarLeidaDto,
-  ) {
-    return this.notificacionesService.marcarLeidas(id_usuario, dto);
-  }
+  ) { return this.notificacionesService.marcarLeidas(id_usuario, dto); }
 
-  /** GET /notificaciones/:id — Detalle de una notificación */
   @Get(':id')
   @Roles('admin', 'recepcionista')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.notificacionesService.findOne(id);
-  }
+  @ApiOperation({ summary: 'Obtener notificación por ID' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Datos de la notificación' })
+  @ApiResponse({ status: 404, description: 'Notificación no encontrada' })
+  findOne(@Param('id', ParseIntPipe) id: number) { return this.notificacionesService.findOne(id); }
 
-  /** PUT /notificaciones/:id — Actualizar notificación */
   @Put(':id')
   @Roles('admin')
+  @ApiOperation({ summary: 'Actualizar notificación (admin)' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Notificación actualizada' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateNotificacionDto) {
     return this.notificacionesService.update(id, dto);
   }
 
-  /** DELETE /notificaciones/:id — Eliminar notificación */
   @Delete(':id')
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.notificacionesService.remove(id);
-  }
+  @ApiOperation({ summary: 'Eliminar notificación (admin)' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 204, description: 'Notificación eliminada' })
+  remove(@Param('id', ParseIntPipe) id: number) { return this.notificacionesService.remove(id); }
 }
