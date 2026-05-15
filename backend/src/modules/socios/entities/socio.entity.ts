@@ -28,9 +28,6 @@ export class Socio {
   @Column({ name: 'datos_salud', type: 'text', nullable: true })
   datos_salud!: string | null;
 
-  @Column({ name: 'activo', type: 'boolean', default: true })
-  activo!: boolean;
-
   @CreateDateColumn({ name: 'fecha_registro', type: 'timestamptz' })
   fecha_registro!: Date;
 
